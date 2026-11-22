@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>鱼鱼 · 下载</title>
+<style>
+  :root{--brand:#4D6BFE;--ink:#1A1A1A;--sub:#A0A0A5;--line:#EDEEF2;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:#F5F6F8;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    padding:24px 16px;color:var(--ink)}
+  .card{background:#fff;border-radius:26px;padding:34px 24px 24px;width:100%;max-width:360px;
+    text-align:center;box-shadow:0 14px 44px rgba(20,30,70,.08)}
+  .logo{width:84px;height:84px;border-radius:24px;margin:0 auto 16px;display:block;object-fit:cover;
+    background:linear-gradient(135deg,#4D6BFE,#8FA6FF);box-shadow:0 8px 22px rgba(77,107,254,.28)}
+  h1{font-size:21px;margin:0 0 6px;letter-spacing:.3px}
+  .sub{font-size:13px;color:var(--sub);margin:0 0 22px}
+  a.btn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;
+    background:var(--brand);color:#fff;padding:15px 16px;border-radius:16px;font-size:16px;
+    font-weight:600;transition:.15s;margin-bottom:10px}
+  a.btn:active{transform:scale(.985);opacity:.9}
+  a.btn .meta{font-size:12px;font-weight:400;opacity:.85}
+  a.btn.ghost{background:#F1F3FF;color:var(--brand)}
+  .row{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 10px;
+    font-size:12px;color:var(--sub)}
+  .copy{border:1px solid var(--line);background:#fff;color:#5A5A60;border-radius:10px;
+    padding:6px 12px;font-size:12px;cursor:pointer}
+  .copy:active{background:#F5F6F8}
+  .ver{margin-top:16px;font-size:12px;color:#C4C4C8;line-height:1.7}
+  .note{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;
+    color:var(--sub);line-height:1.75;text-align:left}
+  .note b{color:#5A5A60;font-weight:600}
+  .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);
+    background:rgba(20,24,36,.88);color:#fff;font-size:13px;padding:9px 16px;border-radius:12px;
+    opacity:0;pointer-events:none;transition:.22s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="icon.png" alt="鱼鱼" onerror="this.style.display='none'">
+    <h1>鱼鱼</h1>
+    <p class="sub">点下面按钮下载安装</p>
+
+    <a class="btn" id="dl" href="https://github.com/jsz0402-hash/yuyu-download/releases/download/v1.5.8/app.apk" download>
+      下载 APK <span class="meta" id="size">· 241 MB</span>
+    </a>
+    <a class="btn ghost" href="https://github.com/jsz0402-hash/yuyu-download/releases/download/v1.5.8/app.apk" target="_blank" rel="noopener">传到电脑 / 用其他浏览器下</a>
+
+    <div class="row">
+      <span>下载慢？</span>
+      <button class="copy" onclick="copyLink()">复制链接</button>
+      <button class="copy" onclick="retry()">重新开始</button>
+    </div>
+
+    <div class="ver" id="ver">版本 1.5.8 · 完整版（含离线语音）</div>
+
+    <div class="note">
+      <b>安装提示</b><br>
+      · 华为/荣耀手机可能提示「未经安全检测」，选「继续安装」<br>
+      · 手机上装完第一次打开会申请存储权限，允许即可<br>
+      · 手机上要先允许「安装未知应用」<br>
+      · 第一次下载可能需要一两分钟，请勿关掉页面
+    </div>
+  </div>
+<div class="toast" id="toast">已复制</div>
+<script>
+  function toast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(window.__tt); window.__tt = setTimeout(function(){ t.classList.remove('show'); }, 1600);
+  }
+  function copyLink(){
+    var url = location.origin + location.pathname + 'app.apk';
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){ toast('链接已复制'); },
+        function(){ legacyCopy(url); });
+    } else legacyCopy(url);
+  }
+  function legacyCopy(url){
+    var i = document.createElement('input'); i.value = url; document.body.appendChild(i);
+    i.select(); try{ document.execCommand('copy'); toast('链接已复制'); }catch(e){ toast(url); }
+    document.body.removeChild(i);
+  }
+  function retry(){
+    var a = document.createElement('a');
+    a.href = 'app.apk?t=' + Date.now(); a.download = '鱼鱼.apk';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+  // 显示真实文件大小
+  
+</script>
+</body>
+</html>
