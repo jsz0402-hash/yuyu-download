@@ -41,13 +41,13 @@
   <div class="card">
     <img class="logo" src="icon.png" alt="鱼鱼" onerror="this.style.display='none'">
     <h1>鱼鱼</h1>
-    <p class="sub">点下面按钮下载安装</p>
+    <p class="sub">先点下面按钮，进去后再点页面上的 Download</p>
 
-    <a class="btn" href="https://ghproxy.net/https://github.com/jsz0402-hash/yuyu-download/releases/download/v1.5.8/app.apk" download>下载 APK <span class="meta">· 241 MB</span></a>
-    <a class="btn ghost" href="https://gh-proxy.com/https://github.com/jsz0402-hash/yuyu-download/releases/download/v1.5.8/app.apk">下载慢？换这个镜像</a>
+    <a class="btn" href="https://gofile.io/d/rx9U3JQC" target="_blank" rel="noopener">去下载 <span class="meta">· 241 MB</span></a>
+    <a class="btn ghost" href="https://ghfast.top/https://github.com/jsz0402-hash/yuyu-download/releases/download/v1.5.8/app.apk" target="_blank" rel="noopener">备用通道（GitHub 加速）</a>
 
     <div class="row">
-      <span>发给别人用这个链接：</span>
+      <span>把本页发给别人：</span>
       <button class="copy" onclick="copyLink()">复制</button>
     </div>
 
@@ -55,10 +55,10 @@
 
     <div class="note">
       <b>安装提示</b><br>
-      · 华为/荣耀手机会提示「未经安全检测」，选「继续安装」<br>
+      · 下载页里点中间的 <b>Download</b>，稍等两三秒才出现按钮是正常的<br>
+      · 华为/荣耀会提示「未经安全检测」，选「继续安装」<br>
       · 需要先允许「安装未知应用」<br>
-      · 241 MB，下载约 1–5 分钟，别中途关页面<br>
-      · 两个按钮内容一模一样，只是走不同的 GitHub 加速通道
+      · 241 MB，下载约 1–5 分钟，别中途关页面
     </div>
   </div>
 <div class="toast" id="toast">已复制</div>
@@ -71,8 +71,7 @@
   function copyLink(){
     var url = location.origin + location.pathname;
     if (navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url).then(function(){ toast('链接已复制'); },
-        function(){ legacyCopy(url); });
+      navigator.clipboard.writeText(url).then(function(){ toast('链接已复制'); }, function(){ legacyCopy(url); });
     } else legacyCopy(url);
   }
   function legacyCopy(url){
