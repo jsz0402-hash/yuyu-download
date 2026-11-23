@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache">
 <title>鱼鱼 · 下载</title>
 <style>
   :root{--brand:#4D6BFE;--ink:#1A1A1A;--sub:#A0A0A5;--line:#EDEEF2;}
@@ -15,11 +16,12 @@
   .logo{width:84px;height:84px;border-radius:24px;margin:0 auto 16px;display:block;object-fit:cover;
     background:linear-gradient(135deg,#4D6BFE,#8FA6FF);box-shadow:0 8px 22px rgba(77,107,254,.28)}
   h1{font-size:21px;margin:0 0 6px;letter-spacing:.3px}
-  .sub{font-size:13px;color:var(--sub);margin:0 0 20px}
+  .sub{font-size:13px;color:var(--sub);margin:0 0 18px}
   a.btn{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;
     background:var(--brand);color:#fff;padding:15px 16px;border-radius:16px;font-size:16px;
     font-weight:600;transition:.15s;margin-bottom:10px}
   a.btn:active{transform:scale(.985);opacity:.9}
+  a.btn[aria-disabled="true"]{opacity:.55;pointer-events:none}
   a.btn .meta{font-size:12px;font-weight:400;opacity:.85}
   a.btn.ghost{background:#F1F3FF;color:var(--brand)}
   .row{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 8px;
@@ -29,8 +31,10 @@
   .copy:active{background:#F5F6F8}
   .ver{margin-top:14px;font-size:12px;color:#C4C4C8;line-height:1.7}
   .note{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;
-    color:var(--sub);line-height:1.75;text-align:left}
+    color:var(--sub);line-height:1.75;text-align:left;white-space:pre-wrap}
   .note b{color:#5A5A60;font-weight:600}
+  .badge{display:none;margin:0 0 12px;font-size:12px;color:#c0392b;background:#fdf0ef;
+    border:1px solid #f6d5d1;border-radius:10px;padding:7px 10px}
   .toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);
     background:rgba(20,24,36,.88);color:#fff;font-size:13px;padding:9px 16px;border-radius:12px;
     opacity:0;pointer-events:none;transition:.22s}
@@ -41,28 +45,39 @@
   <div class="card">
     <img class="logo" src="icon.png" alt="鱼鱼" onerror="this.style.display='none'">
     <h1>鱼鱼</h1>
-    <p class="sub">先点下面按钮，进去后再点页面上的 Download</p>
+    <p class="sub">点下面按钮下载安装</p>
 
-    <a class="btn" href="https://gofile.io/d/HbjEjzmY" target="_blank" rel="noopener">去下载 <span class="meta">· 241 MB</span></a>
-    <a class="btn ghost" href="https://ghfast.top/https://github.com/jsz0402-hash/yuyu-download/releases/download/v1.5.10/app.apk" target="_blank" rel="noopener">备用通道（GitHub 加速）</a>
+    <div class="badge" id="forceBadge">本次为强制更新，请务必更新到最新版</div>
+
+    <a class="btn" id="btnMain" href="#" target="_blank" rel="noopener" aria-disabled="true">
+      正在获取最新版本… <span class="meta" id="btnMeta"></span>
+    </a>
+    <a class="btn ghost" id="btnAlt" href="#" target="_blank" rel="noopener" style="display:none"></a>
 
     <div class="row">
       <span>把本页发给别人：</span>
       <button class="copy" onclick="copyLink()">复制</button>
     </div>
 
-    <div class="ver">版本 1.5.10 · 完整版（含离线语音）</div>
+    <div class="ver" id="verLine">版本获取中…</div>
+    <div class="note" id="updNote" style="display:none"></div>
 
     <div class="note">
       <b>安装提示</b><br>
-      · 下载页里点中间的 <b>Download</b>，稍等两三秒才出现按钮是正常的<br>
+      · 点击按钮后按提示下载安装包<br>
       · 华为/荣耀会提示「未经安全检测」，选「继续安装」<br>
-      · 需要先允许「安装未知应用」<br>
-      · 241 MB，下载约 1–5 分钟，别中途关页面
+      · 需要先允许「安装未知应用」
     </div>
   </div>
 <div class="toast" id="toast">已复制</div>
 <script>
+  var VJSON = 'version.json';
+  var staticFallback = {
+    name: '未知版本',
+    url: 'https://github.com/jsz0402-hash/yuyu-download/releases/latest',
+    note: ''
+  };
+
   function toast(msg){
     var t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -79,6 +94,59 @@
     i.select(); try{ document.execCommand('copy'); toast('链接已复制'); }catch(e){ toast(url); }
     document.body.removeChild(i);
   }
+
+  function apply(v){
+    var btn = document.getElementById('btnMain');
+    var alt = document.getElementById('btnAlt');
+    var meta = document.getElementById('btnMeta');
+    var ver = document.getElementById('verLine');
+    var note = document.getElementById('updNote');
+    var badge = document.getElementById('forceBadge');
+
+    btn.href = v.url || v.page || staticFallback.url;
+    btn.removeAttribute('aria-disabled');
+    btn.innerHTML = '去下载 <span class="meta" id="btnMeta"></span>';
+    meta = document.getElementById('btnMeta');
+    if (v.size) meta.textContent = '· ' + (v.size > 1048576 ? (v.size / 1048576).toFixed(0) + ' MB' : Math.round(v.size / 1024) + ' KB');
+
+    // 有第二个通道就显示
+    if (v.url2){
+      alt.style.display = 'flex';
+      alt.href = v.url2;
+      alt.textContent = v.url2Label || '备用通道';
+    } else {
+      alt.style.display = 'none';
+    }
+
+    ver.textContent = '版本 ' + (v.name || '未知') + (v.code ? '（' + v.code + '）' : '');
+    if (v.note){
+      note.style.display = 'block';
+      note.innerHTML = '<b>更新说明</b>\n' + String(v.note).replace(/[<>&]/g, function(c){
+        return c === '<' ? '&lt;' : (c === '>' ? '&gt;' : '&amp;');
+      });
+    }
+    if (v.force){ badge.style.display = 'block'; }
+  }
+
+  function loadVersion(){
+    var url = VJSON + '?t=' + Date.now();
+    fetch(url, { cache: 'no-store' }).then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(v){
+      if (!v || !(v.url || v.page)) throw new Error('bad json');
+      apply(v);
+    }).catch(function(){
+      // 拿不到就用兜底，不要让人看到空白页
+      apply(staticFallback);
+      document.getElementById('verLine').textContent += ' · 信息获取失败，点按钮去 GitHub 页面';
+    });
+  }
+
+  loadVersion();
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) loadVersion();
+  });
 </script>
 </body>
 </html>
