@@ -53,6 +53,7 @@
       正在获取最新版本… <span class="meta" id="btnMeta"></span>
     </a>
     <a class="btn ghost" id="btnAlt" href="#" target="_blank" rel="noopener" style="display:none"></a>
+    <a class="btn ghost" id="btnAlt2" href="#" target="_blank" rel="noopener" style="display:none"></a>
 
     <div class="row">
       <span>把本页发给别人：</span>
@@ -116,6 +117,16 @@
       alt.textContent = v.url2Label || '备用通道';
     } else {
       alt.style.display = 'none';
+    }
+
+    // 第三个通道（一般是精简版）
+    var alt2 = document.getElementById('btnAlt2');
+    if (v.url3){
+      alt2.style.display = 'flex';
+      alt2.href = v.url3;
+      alt2.textContent = v.url3Label || '精简版下载';
+    } else {
+      alt2.style.display = 'none';
     }
 
     ver.textContent = '版本 ' + (v.name || '未知') + (v.code ? '（' + v.code + '）' : '');
